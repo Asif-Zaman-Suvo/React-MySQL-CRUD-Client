@@ -9,6 +9,8 @@ function App() {
   const [position, setPosition] = useState("");
   const [wage, setWage] = useState(0);
 
+  const [employeeList, setEmployeeList] = useState([]);
+
   const addEmployee = () => {
     Axios.post("http://localhost:3001/create", {
       name: name,
@@ -17,10 +19,21 @@ function App() {
       position: position,
       wage: wage,
     }).then(() => {
-      console.log('Success')
-
+      setEmployeeList([...employeeList, {
+        name: name,
+        age: age,
+        country: country,
+        position: position,
+        wage: wage,
+      }])
     });
   };
+
+  const getEmployees = () => {
+    Axios.get("http://localhost:3001/employees").then((response) => {
+      setEmployeeList(response.data)
+    })
+  }
 
   return (
     <div className="App">
@@ -46,6 +59,26 @@ function App() {
           setWage(event.target.value)
         }} />
         <button onClick={addEmployee}>Add Employee</button>
+      </div>
+      <div className="employees">
+        <button onClick={getEmployees}>Show Employee</button>
+
+        {
+          employeeList.map((employee) => {
+            return (
+              <div className="card">
+                <div className="employees">
+                  <h2><b>Name:{employee.name}</b></h2>
+                  <h3>Age:{employee.age}</h3>
+                  <h3>Country : {employee.country}</h3>
+                  <h3>Position: {employee.position}</h3>
+                  <h3>Salary:{employee.wage}</h3>
+
+                </div>
+              </div>
+            )
+          })
+        }
       </div>
     </div>
   );
